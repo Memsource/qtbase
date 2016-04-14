@@ -1547,8 +1547,6 @@ void QTextEngine::validate() const
     layoutData = new LayoutData();
     if (block.docHandle()) {
         layoutData->string = block.text();
-        if (option.flags() & QTextOption::ShowLineAndParagraphSeparators)
-            layoutData->string += QLatin1Char(block.next().isValid() ? 0xb6 : 0x20);
     } else {
         layoutData->string = text;
     }
@@ -1616,23 +1614,20 @@ void QTextEngine::itemize() const
             analysis->flags = QScriptAnalysis::Object;
             break;
         case QChar::LineSeparator:
-            if (analysis->bidiLevel % 2)
-                --analysis->bidiLevel;
             analysis->flags = QScriptAnalysis::LineOrParagraphSeparator;
-            if (option.flags() & QTextOption::ShowLineAndParagraphSeparators)
-                *const_cast<ushort*>(uc) = 0x21B5; // visual line separator
             break;
         case QChar::Tabulation:
             analysis->flags = QScriptAnalysis::Tab;
             analysis->bidiLevel = control.baseLevel();
             break;
         case QChar::Space:
+            analysis->flags = QScriptAnalysis::Space;
+            analysis->bidiLevel = control.baseLevel();
+            break;
         case QChar::Nbsp:
-            if (option.flags() & QTextOption::ShowTabsAndSpaces) {
-                analysis->flags = QScriptAnalysis::Space;
-                analysis->bidiLevel = control.baseLevel();
-                break;
-            }
+            analysis->flags = QScriptAnalysis::NonBreakingSpace;
+            analysis->bidiLevel = control.baseLevel();
+            break;
         // fall through
         default:
             analysis->flags = QScriptAnalysis::None;
@@ -1643,9 +1638,6 @@ void QTextEngine::itemize() const
 #endif
         ++uc;
         ++analysis;
-    }
-    if (option.flags() & QTextOption::ShowLineAndParagraphSeparators) {
-        (analysis-1)->flags = QScriptAnalysis::LineOrParagraphSeparator; // to exclude it from width
     }
 #ifdef QT_ENABLE_HARFBUZZ_NG
     analysis = scriptAnalysis.data();
