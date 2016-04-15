@@ -197,6 +197,7 @@ public:
         TextOutline = 0x2022,
         TextUnderlineStyle = 0x2023,
         TextToolTip = 0x2024,
+        TextMisspelling = 0x2025,
 
         IsAnchor = 0x2030,
         AnchorHref = 0x2031,
@@ -504,6 +505,10 @@ public:
     void setUnderlineStyle(UnderlineStyle style);
     inline UnderlineStyle underlineStyle() const
     { return static_cast<UnderlineStyle>(intProperty(TextUnderlineStyle)); }
+
+    void setMisspelling(bool misspelling);
+    inline bool misspelling() const
+    { return static_cast<UnderlineStyle >( boolProperty( TextMisspelling ) ); }
 
     inline void setVerticalAlignment(VerticalAlignment alignment)
     { setProperty(TextVerticalAlignment, alignment); }
