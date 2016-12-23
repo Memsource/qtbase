@@ -52,7 +52,6 @@
 #include "qvarlengtharray.h"
 #include "qstatictext.h"
 #include "qglyphrun.h"
-#include "qguiapplication"
 
 #include <qpa/qplatformtheme.h>
 #include <qpa/qplatformintegration.h>
@@ -6239,14 +6238,11 @@ static void drawMisspellingUnderline( QPainter* painter, QPen& pen, const QPoint
 
     }
 
-    if ( const QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme() ) {
-        const QVariant themeHint = theme->themeHint( QPlatformTheme::ThemeHint::SpellCheckUnderlineStyle );
-        if ( themeHint.isValid() ) {
-            underlineStyle = (QTextCharFormat::UnderlineStyle)themeHint.toInt();
-        }
-    }
+    QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme();
+    if (theme)
+      underlineStyle = QTextCharFormat::UnderlineStyle(theme->themeHint(QPlatformTheme::SpellCheckUnderlineStyle).toInt());
 
-    if ( underlineStyle == QTextCharFormat::WaveUnderline ) {
+    if ( underlineStyle == QTextCharFormat::WaveUnderline || underlineStyle == QTextCharFormat::SpellCheckUnderline ) {
         painter->save();
         painter->translate( 0, pos.y() + 1 );
 
@@ -6321,7 +6317,7 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
             pen.setColor(uc);
 
         // Adapt wave to underlineOffset or pen width, whatever is larger, to make it work on all platforms
-        const QPixmap wave = generateWavyPixmap(qMax(underlineOffset, pen.widthF()), pen);
+        const QPixmap wave = generateWavyPixmap(fe->descent().toReal() / 2.0, pen);
         const int descent = (int) fe->descent().toReal();
 
         painter->setBrushOrigin(painter->brushOrigin().x(), 0);
