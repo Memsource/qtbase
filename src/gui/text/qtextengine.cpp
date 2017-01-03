@@ -2552,6 +2552,8 @@ bool QTextEngine::atWordSeparator(int position) const
     case '~':
     case '|':
     case '\\':
+    // Special characters
+	case QChar::ObjectReplacementCharacter:
         return true;
     default:
         break;
