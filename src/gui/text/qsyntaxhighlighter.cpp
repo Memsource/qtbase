@@ -289,7 +289,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
 QSyntaxHighlighter::QSyntaxHighlighter(QObject *parent)
     : QObject(*new QSyntaxHighlighterPrivate, parent)
 {
-    if (parent->inherits("QTextEdit")) {
+    if (parent != 0 && parent->inherits("QTextEdit")) {
         QTextDocument *doc = parent->property("document").value<QTextDocument *>();
         if (doc)
             setDocument(doc);
@@ -457,7 +457,7 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QTextCharFormat &
 
     const int end = qMin(start + count, d->formatChanges.count());
     for (int i = start; i < end; ++i)
-        d->formatChanges[i] = format;
+        d->formatChanges[i].merge(format);
 }
 
 /*!
