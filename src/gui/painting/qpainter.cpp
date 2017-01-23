@@ -6298,6 +6298,9 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
         painter->setRenderHint(QPainter::Qt4CompatiblePainting, false);
 
     const qreal underlineOffset = fe->underlinePosition().toReal();
+    // deliberately ceil the offset to avoid the underline coming too close to
+    // the text above it.
+    const qreal underlinePos = pos.y() + qCeil(underlineOffset) + 0.5;
 
     if (underlineStyle == QTextCharFormat::SpellCheckUnderline) {
         QPlatformTheme *theme = QGuiApplicationPrivate::platformTheme();

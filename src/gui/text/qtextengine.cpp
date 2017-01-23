@@ -1631,7 +1631,6 @@ void QTextEngine::itemize() const
             break;
         case QChar::LineSeparator:
             analysis->flags = QScriptAnalysis::LineOrParagraphSeparator;
-            }
             break;
         case QChar::Tabulation:
             analysis->flags = QScriptAnalysis::Tab;
