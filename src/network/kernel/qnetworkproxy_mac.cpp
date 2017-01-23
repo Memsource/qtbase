@@ -35,7 +35,12 @@
 
 #ifndef QT_NO_NETWORKPROXY
 
+#if __OSX_AVAILABLE_STARTING(__MAC_10_8, __IPHONE_NA)
 #include <CFNetwork/CFNetwork.h>
+#else
+#include <CoreServices/CoreServices.h>
+#endif
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <SystemConfiguration/SystemConfiguration.h>
 
