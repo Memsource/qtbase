@@ -2104,6 +2104,10 @@ int QTextLine::textStart() const
 */
 int QTextLine::textLength() const
 {
+    if( eng->option.flags() & QTextOption::ShowLineAndParagraphSeparators
+        && eng->block.isValid() && index == eng->lines.count() - 1 ) {
+        return eng->lines[ index ].length - 1;
+    }
     return eng->lines[index].length + eng->lines[index].trailingSpaces;
 }
 
