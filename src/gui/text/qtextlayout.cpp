@@ -2428,7 +2428,7 @@ void QTextLine::draw(QPainter *p, const QPointF &pos, const QTextLayout::FormatR
     bool noText = (selection && selection->format.property(SuppressText).toBool());
     bool rtl = (eng->block.document() && eng->block.document()->defaultTextOption().textDirection() == Qt::RightToLeft);
 
-    if (!line.length) {
+    if (!line.length && !(eng->option.flags() & QTextOption::ShowLineAndParagraphSeparators) ) {
         if (selection
             && selection->start <= line.from
             && selection->start + selection->length > line.from) {
