@@ -2563,46 +2563,44 @@ bool QTextEngine::atWordSeparator(int position) const
     case '^':
     case '*':
     case '\'':
-    case '«':
-    case '»':
     case '"':
     case '`':
     case '~':
     case '|':
     case '\\':
   // Double Angle Quotation Mark   
-	case 0x00AB:
-	case 0x00BB:
-	// Quotation marks in Unicode
-	case 0x2018:
-	case 0x2019:
-	case 0x201A:
-	case 0x201B:
-	case 0x201C:
-	case 0x201D:
-	case 0x201E:
-	case 0x201F:
-	case 0x2039:
-	case 0x203A:
-	// Quotation marks in Chinese, Japanese, and Korean (CJK)
-	case 0x300C:
-	case 0x300D:
-	case 0x300E:
-	case 0x300F:
-	case 0x301D:
-	case 0x301E:
-	case 0x301F:
-	// Alternate encodings
-	case 0xFE41:
-	case 0xFE42:
-	case 0xFE43:
-	case 0xFE44:
-	case 0xFF02:
-	case 0xFF07:
-	case 0xFF62:
-	case 0xFF63:
+    case 0x00AB:
+    case 0x00BB:
+    // Quotation marks in Unicode
+    case 0x2018:
+    case 0x2019:
+    case 0x201A:
+    case 0x201B:
+    case 0x201C:
+    case 0x201D:
+    case 0x201E:
+    case 0x201F:
+    case 0x2039:
+    case 0x203A:
+    // Quotation marks in Chinese, Japanese, and Korean (CJK)
+    case 0x300C:
+    case 0x300D:
+    case 0x300E:
+    case 0x300F:
+    case 0x301D:
+    case 0x301E:
+    case 0x301F:
+    // Alternate encodings
+    case 0xFE41:
+    case 0xFE42:
+    case 0xFE43:
+    case 0xFE44:
+    case 0xFF02:
+    case 0xFF07:
+    case 0xFF62:
+    case 0xFF63:
     // Special characters
-	case QChar::ObjectReplacementCharacter:
+    case QChar::ObjectReplacementCharacter:
         return true;
     default:
         break;
