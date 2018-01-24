@@ -2001,8 +2001,13 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
     // insert commit string
     if (!e->commitString().isEmpty() || e->replacementLength()) {
         QTextCursor c = cursor;
-        c.setPosition(c.position() + e->replacementStart());
-        c.setPosition(c.position() + e->replacementLength(), QTextCursor::KeepAnchor);
+		if( e->replacementLength() ) {
+			c.setPosition( c.position() + e->replacementStart() );
+			c.setPosition( c.position() + e->replacementLength(), QTextCursor::KeepAnchor );
+		} else if( overwriteMode ) {
+			c.setPosition( c.position() );
+			c.setPosition( c.position() + e->commitString().length(), QTextCursor::KeepAnchor );
+		}
         c.insertText(e->commitString());
     }
 
