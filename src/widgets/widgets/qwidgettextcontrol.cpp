@@ -2006,9 +2006,10 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
             c.setPosition(c.position() + e->replacementLength(), QTextCursor::KeepAnchor);
         } else if(overwriteMode) {
             c.setPosition(c.position());
-            c.setPosition(c.position() + e->commitString().length(), QTextCursor::KeepAnchor);
-            // move to end of document if commitString is long
-            if(c.position() != c.position() + e->commitString().length()){
+            int selectionEndPos = c.position() + e->commitString().length();
+            c.setPosition(selectionEndPos, QTextCursor::KeepAnchor);
+            // move to end of document if we don't success with selectionEndPos
+            if(c.position() != selectionEndPos){
                 c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
             }
         }
