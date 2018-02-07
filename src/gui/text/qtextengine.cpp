@@ -1675,29 +1675,20 @@ void QTextEngine::itemize() const
             analysis->flags = QScriptAnalysis::Object;
             break;
         case QChar::LineSeparator:
-            if (analysis->bidiLevel % 2)
-                --analysis->bidiLevel;
             analysis->flags = QScriptAnalysis::LineOrParagraphSeparator;
-            if (option.flags() & QTextOption::ShowLineAndParagraphSeparators) {
-                const int offset = uc - string;
-                layoutData->string.detach();
-                string = reinterpret_cast<const ushort *>(layoutData->string.unicode());
-                uc = string + offset;
-                e = uc + length;
-                *const_cast<ushort*>(uc) = 0x21B5; // visual line separator
-            }
             break;
         case QChar::Tabulation:
             analysis->flags = QScriptAnalysis::Tab;
             analysis->bidiLevel = control.baseLevel();
             break;
         case QChar::Space:
+            analysis->flags = QScriptAnalysis::Space;
+            analysis->bidiLevel = control.baseLevel();
+            break;
         case QChar::Nbsp:
-            if (option.flags() & QTextOption::ShowTabsAndSpaces) {
-                analysis->flags = QScriptAnalysis::Space;
-                analysis->bidiLevel = control.baseLevel();
-                break;
-            }
+            analysis->flags = QScriptAnalysis::NonBreakingSpace;
+            analysis->bidiLevel = control.baseLevel();
+            break;
             Q_FALLTHROUGH();
         default:
             analysis->flags = QScriptAnalysis::None;
@@ -1708,9 +1699,6 @@ void QTextEngine::itemize() const
 #endif
         ++uc;
         ++analysis;
-    }
-    if (option.flags() & QTextOption::ShowLineAndParagraphSeparators) {
-        (analysis-1)->flags = QScriptAnalysis::LineOrParagraphSeparator; // to exclude it from width
     }
 #if QT_CONFIG(harfbuzz)
     analysis = scriptAnalysis.data();
@@ -2625,6 +2613,39 @@ bool QTextEngine::atWordSeparator(int position) const
     case '~':
     case '|':
     case '\\':
+  // Double Angle Quotation Mark   
+    case 0x00AB:
+    case 0x00BB:
+    // Quotation marks in Unicode
+    case 0x2018:
+    case 0x2019:
+    case 0x201A:
+    case 0x201B:
+    case 0x201C:
+    case 0x201D:
+    case 0x201E:
+    case 0x201F:
+    case 0x2039:
+    case 0x203A:
+    // Quotation marks in Chinese, Japanese, and Korean (CJK)
+    case 0x300C:
+    case 0x300D:
+    case 0x300E:
+    case 0x300F:
+    case 0x301D:
+    case 0x301E:
+    case 0x301F:
+    // Alternate encodings
+    case 0xFE41:
+    case 0xFE42:
+    case 0xFE43:
+    case 0xFE44:
+    case 0xFF02:
+    case 0xFF07:
+    case 0xFF62:
+    case 0xFF63:
+    // Special characters
+    case QChar::ObjectReplacementCharacter:
         return true;
     default:
         break;

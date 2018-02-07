@@ -1984,8 +1984,18 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
     // insert commit string
     if (!e->commitString().isEmpty() || e->replacementLength()) {
         QTextCursor c = cursor;
-        c.setPosition(c.position() + e->replacementStart());
-        c.setPosition(c.position() + e->replacementLength(), QTextCursor::KeepAnchor);
+        if (e->replacementLength()) {
+            c.setPosition(c.position() + e->replacementStart());
+            c.setPosition(c.position() + e->replacementLength(), QTextCursor::KeepAnchor);
+        } else if (overwriteMode) {
+            c.setPosition(c.position());
+            int selectionEndPos = c.position() + e->commitString().length();
+            c.setPosition(selectionEndPos, QTextCursor::KeepAnchor);
+            // move to end of document if we don't success with selectionEndPos
+            if (c.position() != selectionEndPos) {
+                c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+            }
+        }
         c.insertText(e->commitString());
     }
 

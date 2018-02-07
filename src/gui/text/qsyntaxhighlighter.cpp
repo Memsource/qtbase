@@ -70,11 +70,11 @@ public:
 
     inline void rehighlight(QTextCursor &cursor, QTextCursor::MoveOperation operation) {
         inReformatBlocks = true;
-        cursor.beginEditBlock();
+        //cursor.beginEditBlock();
         int from = cursor.position();
         cursor.movePosition(operation);
         reformatBlocks(from, 0, cursor.position() - from);
-        cursor.endEditBlock();
+        //cursor.endEditBlock();
         inReformatBlocks = false;
     }
 
@@ -299,7 +299,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(const QTextBlock &block)
 QSyntaxHighlighter::QSyntaxHighlighter(QObject *parent)
     : QObject(*new QSyntaxHighlighterPrivate, parent)
 {
-    if (parent->inherits("QTextEdit")) {
+    if (parent != 0 && parent->inherits("QTextEdit")) {
         QTextDocument *doc = parent->property("document").value<QTextDocument *>();
         if (doc)
             setDocument(doc);
@@ -337,10 +337,10 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
                    this, SLOT(_q_reformatBlocks(int,int,int)));
 
         QTextCursor cursor(d->doc);
-        cursor.beginEditBlock();
+        //cursor.beginEditBlock();
         for (QTextBlock blk = d->doc->begin(); blk.isValid(); blk = blk.next())
             blk.layout()->clearFormats();
-        cursor.endEditBlock();
+        //cursor.endEditBlock();
     }
     d->doc = doc;
     if (d->doc) {
@@ -446,7 +446,7 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QTextCharFormat &
 
     const int end = qMin(start + count, d->formatChanges.count());
     for (int i = start; i < end; ++i)
-        d->formatChanges[i] = format;
+        d->formatChanges[i].merge(format);
 }
 
 /*!
