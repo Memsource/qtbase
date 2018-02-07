@@ -2009,7 +2009,7 @@ void QWidgetTextControlPrivate::inputMethodEvent(QInputMethodEvent *e)
             int selectionEndPos = c.position() + e->commitString().length();
             c.setPosition(selectionEndPos, QTextCursor::KeepAnchor);
             // move to end of document if we don't success with selectionEndPos
-            if(c.position() != selectionEndPos){
+            if(c.position() != selectionEndPos) {
                 c.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
             }
         }
