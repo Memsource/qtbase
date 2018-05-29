@@ -423,7 +423,7 @@ void concatenateMachData(QMatchData & current, const QMatchData & newData)
         current = newData;
     } else {
         for (int i = 0; i < newData.indices.count(); ++i ) {
-            if (current.indices.indexOf(newData.indices[i]) == -1 ) {
+            if (current.indices.indexOf(newData.indices[i]) == -1) {
                 current.indices.append(newData.indices[i]);
             }
         }
@@ -447,9 +447,9 @@ void QCompletionEngine::filter(const QStringList& parts)
 
     QModelIndex parent;
     for (int i = 0; i < curParts.count() - 1; i++) {
-        QString part = curParts.at( i );
-        QMatchData newData = filter( part, parent,  1);
-        concatenateMachData( curMatch, newData );
+        QString part = curParts.at(i);
+        QMatchData newData = filter(part, parent,  1);
+        concatenateMachData(curMatch, newData);
     }
 
     // Note that we set the curParent to a valid parent, even if we have no matches
@@ -458,8 +458,8 @@ void QCompletionEngine::filter(const QStringList& parts)
     if (curParts.constLast().isEmpty())
         curMatch = QMatchData(QIndexMapper(0, model->rowCount(curParent) - 1), -1, false);
     else {
-        QMatchData newData = filter( curParts.constLast(), curParent, 1 ); // build at least one
-        concatenateMachData( curMatch, newData );
+        QMatchData newData = filter(curParts.constLast(), curParent, 1); // build at least one
+        concatenateMachData(curMatch, newData);
     }
     curRow = curMatch.isValid() ? 0 : -1;
 }
