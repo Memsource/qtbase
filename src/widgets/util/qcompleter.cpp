@@ -414,7 +414,7 @@ void QCompletionModel::filter(const QStringList& parts)
         d->model->fetchMore(engine->curParent);
 }
 
-void concatenateMachData(QMatchData & current, const QMatchData & newData)
+void concatenateMatchData(QMatchData & current, const QMatchData & newData)
 {
     if (!newData.isValid())
         return;
@@ -449,7 +449,7 @@ void QCompletionEngine::filter(const QStringList& parts)
     for (int i = 0; i < curParts.count() - 1; i++) {
         QString part = curParts.at(i);
         QMatchData newData = filter(part, parent,  1);
-        concatenateMachData(curMatch, newData);
+        concatenateMatchData(curMatch, newData);
     }
 
     // Note that we set the curParent to a valid parent, even if we have no matches
@@ -459,7 +459,7 @@ void QCompletionEngine::filter(const QStringList& parts)
         curMatch = QMatchData(QIndexMapper(0, model->rowCount(curParent) - 1), -1, false);
     else {
         QMatchData newData = filter(curParts.constLast(), curParent, 1); // build at least one
-        concatenateMachData(curMatch, newData);
+        concatenateMatchData(curMatch, newData);
     }
     curRow = curMatch.isValid() ? 0 : -1;
 }
