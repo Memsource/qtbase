@@ -414,7 +414,25 @@ void QCompletionModel::filter(const QStringList& parts)
         d->model->fetchMore(engine->curParent);
 }
 
-//////////////////////////////////////////////////////////////////////////////
+void concatenateMatchData(QMatchData & current, const QMatchData & newData)
+{
+    if (!newData.isValid())
+        return;
+
+    if (!current.isValid()) {
+        current = newData;
+    } else {
+        if (newData.partial) {
+            current.partial = true;
+        }
+        for (int i = 0; i < newData.indices.count(); ++i) {
+            if (current.indices.indexOf(newData.indices[i]) == -1) {
+                current.indices.append(newData.indices[i]);
+            }
+        }
+    }
+}
+
 void QCompletionEngine::filter(const QStringList& parts)
 {
     const QAbstractItemModel *model = c->proxy->sourceModel();
@@ -433,10 +451,8 @@ void QCompletionEngine::filter(const QStringList& parts)
     QModelIndex parent;
     for (int i = 0; i < curParts.count() - 1; i++) {
         QString part = curParts.at(i);
-        int emi = filter(part, parent, -1).exactMatchIndex;
-        if (emi == -1)
-            return;
-        parent = model->index(emi, c->column, parent);
+        QMatchData newData = filter(part, parent, -1);
+        concatenateMatchData(curMatch, newData);
     }
 
     // Note that we set the curParent to a valid parent, even if we have no matches
@@ -444,8 +460,10 @@ void QCompletionEngine::filter(const QStringList& parts)
     curParent = parent;
     if (curParts.constLast().isEmpty())
         curMatch = QMatchData(QIndexMapper(0, model->rowCount(curParent) - 1), -1, false);
-    else
-        curMatch = filter(curParts.constLast(), curParent, 1); // build at least one
+    else {
+        QMatchData newData = filter(curParts.constLast(), curParent, 1); // build at least one
+        concatenateMatchData(curMatch, newData);
+    }
     curRow = curMatch.isValid() ? 0 : -1;
 }
 
