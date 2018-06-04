@@ -422,7 +422,10 @@ void concatenateMatchData(QMatchData & current, const QMatchData & newData)
     if (!current.isValid()) {
         current = newData;
     } else {
-        for (int i = 0; i < newData.indices.count(); ++i ) {
+        if (newData.partial) {
+            current.partial = true;
+        }
+        for (int i = 0; i < newData.indices.count(); ++i) {
             if (current.indices.indexOf(newData.indices[i]) == -1) {
                 current.indices.append(newData.indices[i]);
             }
@@ -448,7 +451,7 @@ void QCompletionEngine::filter(const QStringList& parts)
     QModelIndex parent;
     for (int i = 0; i < curParts.count() - 1; i++) {
         QString part = curParts.at(i);
-        QMatchData newData = filter(part, parent,  1);
+        QMatchData newData = filter(part, parent, -1);
         concatenateMatchData(curMatch, newData);
     }
 
