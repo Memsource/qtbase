@@ -6311,7 +6311,6 @@ static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const 
     if (underlineStyle == QTextCharFormat::WaveUnderline) {
         painter->save();
         painter->translate(0, pos.y() + 1);
-        qreal maxHeight = fe->descent().toReal() - qreal(1);
 
         QColor uc = charFormat.underlineColor();
         if (uc.isValid())
